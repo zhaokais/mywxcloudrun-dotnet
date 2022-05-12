@@ -7,18 +7,169 @@
     ViewData["Title"] = "欢迎使用微信云托管";
 }
 
-<div class="container">
-    <div class="title">
-        <img class="title-logo" src="https://static-index-4gtuqm3bfa95c963-1304825656.tcloudbaseapp.com/official-website/favicon.svg" />
-        <h1 style="display: inline; margin-bottom: 48px">欢迎使用微信云托管</h1>
+<style>
+    .listItem-all {
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #8E8E93;
+        color: #8E8E93;
+        border-radius: 5px;
+    }
+
+    .listItem-no {
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #FF3B30;
+        color: #FF3B30;
+        border-radius: 5px;
+    }
+
+    .menuItem {
+        width: 200px;
+        height: 140px;
+        border-radius: 20px;
+        margin: 0 10px;
+        color: #FFF;
+        text-align: center;
+        line-height: 140px;
+        font-weight: 600;
+    }
+</style>
+
+<div style="margin-top: 50px;
+padding: 20px;
+font-weight: 800;
+font-size: 30px;">所有的学校：</div>
+
+<div id="all" style="display: flex;flex-flow: wrap;padding: 20px;">
+
+</div>
+
+<div style="display: flex; padding: 20px;">
+    <div style="background-color: #007AFF;" class="menuItem">
+        <div onclick="clickMultiple()">选择多个文件</div>
+        <input type="file" id="file-selector-multiple" multiple hidden>
     </div>
-    <div style="text-align: center">
-        <p class="count-text">当前计数：<span class="count-number"></span></p>
-        <div style="display: flex; justify-content: center; margin-bottom: 80px">
-            <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0" onclick="set('inc')">计数+1</a>
-            <a class="btn btn-outline-success btn-lg count-button" style="background: rgba(0, 0, 0, 0.03); color: #07c160; border: 0" onclick="set('clear')">清零</a>
-        </div>
-        <small class="text-black-50" style="display: flex; justify-content: center; margin-bottom: 16px">扫码加入微信云托管用户群</small>
-        <img class="qrcode middle" src="https://qcloudimg.tencent-cloud.cn/raw/89b46988d3cd73d8a56e76a1b82bb377.png" />
+    <div style="background-color: #5856D6;" class="menuItem">
+        <div onclick="clickDirectory()">选择文件夹</div>
+        <input type="file" id="file-selector-webkitdirectory" webkitdirectory hidden>
     </div>
 </div>
+<!-- 选择多个文件<input type="file" id="file-selector-multiple" multiple><br>
+选择文件夹<input type="file" id="file-selector-webkitdirectory" webkitdirectory><br> -->
+<!-- 选择单个文件<input type="file" id="file-selector"><br> -->
+
+<div style="
+padding: 20px;
+font-weight: 800;
+font-size: 30px;">没交的学校：</div>
+<div id="no" style="display: flex;flex-flow: wrap;padding: 20px;">
+</div>
+
+<script>
+    let entityList = [
+        '一幼',
+        '二幼',
+        '三幼',
+        '蒙幼',
+        '五幼',
+        '六幼',
+        '七幼',
+        '八幼',
+        '民幼',
+        '九幼',
+        '十幼',
+        '十一幼',
+        '十二幼',
+        '旭禾',
+        '尚都',
+        '幸福童年',
+        '奥斯顿',
+        '博翔',
+        '早教',
+        '早教东',
+        '实验小',
+        '一小',
+        '二小',
+        '三小',
+        '四小',
+        '五小',
+        '六小',
+        '八小',
+        '九小',
+        '市一中东',
+        '实验中',
+        '一中',
+        '二中',
+        '三中',
+        '青少年发展中心',
+    ];
+    initAll();
+
+    function clickMultiple() {
+        fileSelectorMultiple.click();
+    }
+    function clickDirectory() {
+        fileSelectorWebkitdirectory.click();
+    }
+
+    const fileSelectorMultiple = document.getElementById('file-selector-multiple');
+    fileSelectorMultiple.addEventListener('change', (event) => {
+        const fileList = event.target.files;
+        console.log(fileList);
+        let names = [];
+        for (let i = 0; i < fileList.length; i++) {
+            names.push(fileList[i].name);
+        }
+        check(names);
+    });
+    const fileSelectorWebkitdirectory = document.getElementById('file-selector-webkitdirectory');
+    fileSelectorWebkitdirectory.addEventListener('change', (event) => {
+        const fileList = event.target.files;
+        console.log(fileList);
+        let names = [];
+        for (let i = 0; i < fileList.length; i++) {
+            names.push(fileList[i].name);
+        }
+        check(names);
+    });
+    // const fileSelector = document.getElementById('file-selector');
+    // fileSelector.addEventListener('change', (event) => {
+    //     const fileList = event.target.files;
+    //     console.log(fileList);
+    // });
+
+    function check(eles) {
+        let list = [];
+        list = list.concat(list, entityList);
+        let result = ""
+        list.forEach(e => {
+            let has = false
+            eles.forEach(item => {
+                if (item.indexOf(e) !== -1) {
+                    has = true;
+                }
+            });
+            if (!has) {
+                console.log(e);
+                result += '<div class="listItem-no">' + e + '</div>';
+            }
+
+        });
+        document.getElementById('no').innerHTML = result;
+    }
+    function initAll() {
+        let result = '';
+        entityList.forEach(item => {
+            result += '<div class="listItem-all" onClick="deleteItem(\'' + item + '\')">' + item + '</div>';
+        });
+        document.getElementById('all').innerHTML = result;
+    }
+    function deleteItem(item) {
+        var index = entityList.indexOf(item);
+        if (index !== -1) {
+            entityList.splice(index, 1);
+        }
+        initAll();
+    }
+</script>
